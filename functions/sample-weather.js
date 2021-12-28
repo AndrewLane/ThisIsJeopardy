@@ -5,7 +5,7 @@ export async function onRequestGet(context) {
     {
       date: "2021-10-31",
       temperatureC: 20,
-      summary: "Balmy",
+      summary: `Balmy at ${request.headers.get("CF-Connecting-IP")}`,
     },
     {
       date: "2021-12-25",
