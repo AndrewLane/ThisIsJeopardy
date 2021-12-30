@@ -13,7 +13,9 @@
                 "dev",
                 ".",
                 "--port",
-                "8888"
+                "8888",
+                "--kv",
+                "GAMESTATE"
             ],
             "runtimeExecutable": "npx",
             "skipFiles": [

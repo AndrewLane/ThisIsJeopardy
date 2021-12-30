@@ -8,7 +8,7 @@ The API is javascript run via `wrangler` (v2 in beta as of Dec 2021), which emul
 
 - Terminal 1 (API via Wrangler v2)
 
-  - `npx wrangler@beta pages dev . --port 8888`
+  - `npx wrangler@beta pages dev . --port 8888 --kv GAMESTATE`
 
 - Terminal 2 (Blazor WASM via dotnet)
   - `dotnet run`
