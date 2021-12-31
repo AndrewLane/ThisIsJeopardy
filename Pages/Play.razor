@@ -1,0 +1,78 @@
+﻿@page "/play/{gameId}/{playerName}"
+@using ThisIsJeopardy.Services
+@using ThisIsJeopardy.Models
+@implements IDisposable
+@inject HttpClient Http
+@inject NotifierService Notifier
+@inject TimerService Timer
+
+<PageTitle>Play</PageTitle>
+
+<h1>Hi, @PlayerName!</h1>
+
+@if (gameStarted == false)
+{
+    <button class="btn btn-primary" @onclick="StartTimer">Let's Play!</button>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="BuzzIn">Buzz In</button>
+    <br />
+    @if (gameState?.BuzzedInPlayer != null)
+    {
+        <p>Buzzed in player: @gameState?.BuzzedInPlayer</p>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public string? PlayerName { get; set; }
+
+    [Parameter]
+    public string? GameId { get; set; }
+
+    private GameState? gameState;
+    private bool gameStarted = false;
+
+    protected override void OnInitialized()
+    {
+        Notifier.Notify += OnNotify;
+    }
+
+    private void StartTimer()
+    {
+        gameStarted = true;
+        Timer.Start();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshGameState();
+    }
+
+    public async Task OnNotify(string key, int value)
+    {
+        await InvokeAsync(async () =>
+        {
+            await RefreshGameState();
+            StateHasChanged();
+        });
+    }
+
+    private async Task BuzzIn()
+    {
+        var response = await Http.PostAsJsonAsync("buzz-in", new { playerId = PlayerName, gameId = GameId });
+        gameState = await response.Content.ReadFromJsonAsync<GameState>();
+    }
+
+    private async Task RefreshGameState()
+    {
+        gameState = await Http.GetFromJsonAsync<GameState>($"game-state?gameId={GameId}");
+    }
+
+    public void Dispose()
+    {
+        Notifier.Notify -= OnNotify;
+    }
+}

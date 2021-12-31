@@ -1,0 +1,41 @@
+﻿@page "/host"
+@using ThisIsJeopardy.Models
+@inject HttpClient Http
+
+<PageTitle>Host Game</PageTitle>
+
+<h1>Host Game</h1>
+
+@if (gameState == null)
+{
+    <p>
+        Player 1:
+        <input type="text" @bind="playerId1" />
+    </p>
+    <p>
+        Player 2:
+        <input type="text" @bind="playerId2" />
+    </p>
+    <button class="btn btn-primary" @onclick="CreateGame">Host Game</button>
+}
+else
+{
+    <p>New game created! Send these links to the two players...</p>
+    <p><a href="play/@gameState.GameId/@gameState.PlayerId1">Player 1 Link</a></p>
+    <p><a href="play/@gameState.GameId/@gameState.PlayerId2">Player 2 Link</a></p>
+}
+
+@code {
+    private GameState? gameState;
+    private string? playerId1;
+    private string? playerId2;
+    private async Task CreateGame()
+    {
+        var response = await Http.PostAsJsonAsync("create-game", new
+        {
+            playerId1 = playerId1,
+            playerId2 = playerId2
+        });
+        gameState = await response.Content.ReadFromJsonAsync<GameState>();
+    }
+}
