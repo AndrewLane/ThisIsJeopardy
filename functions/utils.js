@@ -1,13 +1,7 @@
 export const getHeadersForReturningJson = () => {
-  const headers = {
+  return {
     "content-type": "application/json;charset=UTF-8",
   };
-  if (globalThis.MINIFLARE) {
-    // extra CORS stuff in dev environment
-    headers["Access-Control-Allow-Origin"] = "*";
-    headers["Access-Control-Allow-Methods"] = "POST,GET";
-  }
-  return headers;
 };
 
 export const lookupQueryStringVariable = (request, qsparam) => {
@@ -16,3 +10,5 @@ export const lookupQueryStringVariable = (request, qsparam) => {
 };
 
 export const getGamestateExpirationInSeconds = () => 60 * 60 * 24;
+
+export const getBuzzInExpirationInMilliseconds = () => 5 * 1000;

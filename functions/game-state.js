@@ -1,4 +1,8 @@
-import { getHeadersForReturningJson, lookupQueryStringVariable } from "./utils";
+import {
+  getBuzzInExpirationInMilliseconds,
+  getHeadersForReturningJson,
+  lookupQueryStringVariable,
+} from "./utils";
 
 export const onRequestGet = async ({
   request,
@@ -14,6 +18,20 @@ export const onRequestGet = async ({
   if (!json) {
     throw Error("Game not found!");
   }
+  const gameState = JSON.parse(json);
 
-  return new Response(json, { headers: getHeadersForReturningJson() });
+  const buzzInTime = gameState.buzzedInTime;
+  let differenceInTime = null;
+  if (buzzInTime) {
+    differenceInTime = new Date() - Date.parse(buzzInTime);
+    if (differenceInTime > getBuzzInExpirationInMilliseconds()) {
+      //reset the buzz in data
+      gameState.buzzedInPlayer = null;
+      gameState.buzzedInTime = null;
+    }
+  }
+
+  return new Response(JSON.stringify(gameState), {
+    headers: getHeadersForReturningJson(),
+  });
 };

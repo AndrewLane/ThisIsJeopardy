@@ -1,4 +1,5 @@
 import {
+  getBuzzInExpirationInMilliseconds,
   getGamestateExpirationInSeconds,
   getHeadersForReturningJson,
 } from "./utils";
@@ -26,13 +27,15 @@ export const onRequestPost = async ({
     throw Error("Unknown player!");
   }
   const buzzInTime = gameState.buzzedInTime;
-  const lockOutTime = 5000; // in milliseconds
   let differenceInTime = null;
   if (buzzInTime) {
     differenceInTime = new Date() - Date.parse(buzzInTime);
   }
   let lockedOut = false;
-  if (!differenceInTime || differenceInTime > lockOutTime) {
+  if (
+    !differenceInTime ||
+    differenceInTime > getBuzzInExpirationInMilliseconds()
+  ) {
     gameState.buzzedInTime = new Date();
     gameState.buzzedInPlayer = playerId;
   } else {
