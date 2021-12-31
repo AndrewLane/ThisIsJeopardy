@@ -18,6 +18,9 @@ export const onRequestPost = async ({
   if (!playerId1 || !playerId2) {
     throw Error("Missing information to create game!");
   }
+  if (playerId1 === playerId2) {
+    throw Error("Must have 2 different players!");
+  }
   const gameId = crypto.randomUUID();
 
   const existingGame = await env.GAMESTATE.get(gameId);
