@@ -1,7 +1,5 @@
 ﻿@page "/fetchdata"
-@using ThisIsJeopardy.Services
 @inject HttpClient Http
-@inject ApiHelperService ApiHelper
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -43,7 +41,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>(ApiHelper.GetApi("sample-weather"));
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-weather");
     }
 
     public class WeatherForecast
